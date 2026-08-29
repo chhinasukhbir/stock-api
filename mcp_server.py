@@ -8,9 +8,20 @@ protocol instead of plain HTTP endpoints.
 
 import os
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
 import yfinance as yf
 
-mcp = FastMCP("Stock Data Server")
+# DNS rebinding protection is meant to stop malicious webpages from tricking
+# a browser into hitting a locally-running MCP server - not relevant here
+# since this runs on a real public Render domain, not localhost. Without
+# disabling it, Render's proxy forwards the real hostname as the Host header
+# and the SDK rejects it as untrusted (421 Misdirected Request).
+mcp = FastMCP(
+    "Stock Data Server",
+    transport_security=TransportSecuritySettings(
+        enable_dns_rebinding_protection=False,
+    ),
+)
 
 
 @mcp.tool()
