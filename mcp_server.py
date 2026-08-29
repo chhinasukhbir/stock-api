@@ -83,4 +83,7 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
     mcp.settings.host = "0.0.0.0"
     mcp.settings.port = port
-    mcp.run(transport="https://claude-stock-mcp-server.onrender.com")
+    # Streamable HTTP handles both GET and POST on one path - matches what
+    # the connecting client is actually requesting (confirmed via Render logs)
+    mcp.settings.streamable_http_path = "/"
+    mcp.run(transport="streamable-http")
